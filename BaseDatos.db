@@ -1,0 +1,63 @@
+#Crear base de datos
+
+CREATE DATABASE IF NOT EXISTS DB; #creacion de base de datos
+use db; 
+
+#creacion de tablas e importacion 
+DROP TABLE IF EXISTS Precios;
+CREATE TABLE IF NOT EXISTS Precios(
+   precio	FLOAT,
+   producto_id	VARCHAR(20),
+   sucursal_id	VARCHAR (15),
+   Fecha datetime,
+   foreign key (producto_id) references Productos(id),
+   foreign key (sucursal_id) references Sucursales(id)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_spanish2_ci;
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/Precios.csv'
+INTO TABLE Precios
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' ESCAPED BY '' 
+LINES TERMINATED BY '\n' IGNORE 1 LINES;
+
+DROP TABLE IF EXISTS Productos;
+CREATE TABLE IF NOT EXISTS Productos(
+	id	varchar(50) primary key,
+    marca	Varchar(100),
+    nombre	Varchar(100),
+    presentacion Varchar(80),
+    categoria1	Varchar(80),
+    categoria2	Varchar(80),
+    categoria3 Varchar(80)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_spanish2_ci;
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/Productos.csv'
+INTO TABLE Productos
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' ESCAPED BY '' 
+LINES TERMINATED BY '\n' IGNORE 1 LINES;
+
+DROP TABLE IF EXISTS Sucursales;
+CREATE TABLE IF NOT EXISTS Sucursales(
+	id                 VARCHAR (40)primary key,
+	comercioId         INTEGER (50),
+	banderaId          INTEGER (50),     
+	banderaDescripcion  VARCHAR (100),
+	comercioRazonSocial VARCHAR (100),
+	provincia           VARCHAR (100),
+	localidad           VARCHAR (100),
+	direccion           VARCHAR (100),
+	lat                 DECIMAL(15,6),
+	lng                 DECIMAL(15,6),
+	sucursalNombre      VARCHAR (100),
+	sucursalTipo        VARCHAR (100)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_spanish2_ci;
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/Sucursales.csv'
+INTO TABLE Sucursales
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' ESCAPED BY '' 
+LINES TERMINATED BY '\n' IGNORE 1 LINES;
+
+#deshabilito restriccion momentaneamente para poder cargar los archivos
+SET FOREIGN_KEY_CHECKS=0;
+#Habilito nuevamente los restriccion
+SET FOREIGN_KEY_CHECKS=1;
+
+select avg(precio) as PromedioPrecio
+from Precios
+where sucursal_id='9-1-688';
